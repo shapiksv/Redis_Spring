@@ -20,6 +20,7 @@ lombok {
 
 dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+	compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-redis', version: '1.4.0.RELEASE'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	compile group: 'redis.clients', name: 'jedis', version: '3.2.0'
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {

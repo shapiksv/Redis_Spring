@@ -6,11 +6,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
-
-import java.util.Map;
-
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 class CustomerAccountCrudApplicationTests {
@@ -43,35 +41,31 @@ class CustomerAccountCrudApplicationTests {
 	public void findCustomer() {
 		CustomerAccount testCustomerAccount = new CustomerAccount("25", "Yaroslav");
 		customerAccountRepo.save(testCustomerAccount);
-		String name = customerAccountRepo.findById("25").getName();
-		assertEquals("Yaroslav", name);
+		boolean result= customerAccountRepo.findById("25").isPresent();
+		assertTrue(result);
 		customerAccountRepo.delete("25");
 	}
 
 	@Test
 	public void findAllCustomers() {
-		Map<String, CustomerAccount> findAllTest = customerAccountRepo.findAll();
+		Iterable<CustomerAccount>  findAllTest = customerAccountRepo.findAll();
 		assertNotNull(findAllTest);
 	}
 
 	@Test
 	public void updateCustomer() {
 		customerAccountRepo.update(new CustomerAccount("25", "Yaroslav"));
-		String name = customerAccountRepo.findById("25").getName();
-		assertEquals("Yaroslav", name);
+		boolean result= customerAccountRepo.findById("25").isPresent();
+		assertTrue(result);
 		customerAccountRepo.delete("25");
 	}
 
 	@Test
 	public void deleteCustomer() {
 		customerAccountRepo.update(new CustomerAccount("25", "Yaroslav"));
-		String name = customerAccountRepo.findById("25").getName();
 		customerAccountRepo.delete("25");
-		try {
-			customerAccountRepo.findById("25").getName();
-		}catch (NullPointerException e){
-			assertTrue(true);
-		}
+		boolean result= customerAccountRepo.findById("25").isPresent();
+		assertTrue(!result);
 
 	}
 

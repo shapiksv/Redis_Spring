@@ -2,14 +2,12 @@ package com.springredisexample.controller;
 
 
 import com.springredisexample.model.CustomerAccount;
-import com.springredisexample.repos.CustomerAccountRepo;
-import lombok.NonNull;
+import com.springredisexample.service.CustomerAccountService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/customers")
@@ -17,32 +15,32 @@ import java.util.Map;
 public class MainController {
 
     @Autowired
-    @NonNull
-    private CustomerAccountRepo customerAccountRepo;
+    private CustomerAccountService customerAccountRepo;
 
-    @PostMapping("/add/{id}/{name}")
-    public CustomerAccount add(@PathVariable("id") String id,
-                               @PathVariable("name") String name) {
-        customerAccountRepo.save(new CustomerAccount(id, name));
+    @PostMapping("/create")
+    public CustomerAccount create(@RequestBody CustomerAccount customerAccount) {
+        return customerAccountRepo.save(customerAccount);
+    }
+
+    @PutMapping("{id}")
+    public Optional<CustomerAccount> update(@PathVariable("id") String id,
+                                            @RequestBody CustomerAccount customerAccount) {
+        customerAccountRepo.update(customerAccount);
         return customerAccountRepo.findById(id);
     }
 
-
-    @DeleteMapping("/update/{id}/{name}")
-    public CustomerAccount update(@PathVariable("id") String id,
-                                  @PathVariable("name") String name) {
-        customerAccountRepo.update(new CustomerAccount(id, name));
-        return customerAccountRepo.findById(id);
-    }
-
-    @PutMapping("/delete/{id}")
-    public Map<String, CustomerAccount> delete(@PathVariable("id") String id) {
+    @DeleteMapping("{id}")
+    public void delete(@PathVariable("id") String id) {
         customerAccountRepo.delete(id);
-        return all();
     }
 
-    @GetMapping("/all")
-    public Map<String, CustomerAccount> all() {
+    @GetMapping()
+    public Iterable<CustomerAccount> all() {
         return customerAccountRepo.findAll();
+    }
+
+    @GetMapping("{id}")
+    public Optional<CustomerAccount> findById(@PathVariable("id") String id){
+        return customerAccountRepo.findById(id);
     }
 }
